@@ -4,12 +4,12 @@ struct ContentView: View {
     @State var lightOn = true
     var body: some View {
         ZStack() {
-            lightView(lightOn: $lightOn)
+            LightView(lightOn: $lightOn)
                 .edgesIgnoringSafeArea(.all)
             if lightOn {
-                lightButton(text: "Off") { toggleLight() }
+                LightButton(text: "Off") { toggleLight() }
             } else {
-                lightButton(text: "On") { toggleLight() }
+                LightButton(text: "On") { toggleLight() }
             }
         }
     }
@@ -19,14 +19,14 @@ struct ContentView: View {
     }
 }
 
-struct lightView: View {
+struct LightView: View {
     @Binding var lightOn: Bool
     var body: some View {
         lightOn ? Color.white : Color.black
     }
 }
 
-struct lightButton: View {
+struct LightButton: View {
     @State var text: String
     @State var act: () -> ()
     var body: some View {
