@@ -1,40 +1,33 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var lightOn = true
+    @State var isLightOn = true
     var body: some View {
-        ZStack() {
-            LightView(lightOn: $lightOn)
+        ZStack {
+            LightView(isLightOn: $isLightOn)
                 .edgesIgnoringSafeArea(.all)
-            if lightOn {
-                LightButton(text: "Off") { toggleLight() }
-            } else {
-                LightButton(text: "On") { toggleLight() }
-            }
+            LightButton(isLightOn: $isLightOn)
         }
-    }
-    
-    func toggleLight() {
-        lightOn.toggle()
-    }
-}
-
-struct LightView: View {
-    @Binding var lightOn: Bool
-    var body: some View {
-        lightOn ? Color.white : Color.black
     }
 }
 
 struct LightButton: View {
-    @State var text: String
-    @State var act: () -> ()
+    @Binding var isLightOn: Bool
     var body: some View {
-        Button(action: act) {
-            Text(text)
-                .padding()
+        Button(action: toggleLight) {
+            Text(isLightOn ? "On" : "Off")
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding()
         }
+    }
+    
+    func toggleLight() {
+        isLightOn.toggle()
+    }
+}
+
+struct LightView: View {
+    @Binding var isLightOn: Bool
+    var body: some View {
+        isLightOn ? Color.white : Color.black
     }
 }
