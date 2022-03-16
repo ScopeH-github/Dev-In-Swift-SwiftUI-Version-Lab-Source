@@ -1,7 +1,6 @@
 import SwiftUI
 
-public var totalWins = 0
-public var totalLoses = 0
+public var pressedLetter = [String]()
 
 let qwerty = [
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -9,9 +8,30 @@ let qwerty = [
     ["Z", "X", "C", "V", "B", "N", "M"]
 ]
 
+public var totalWins = 0 {
+    didSet {
+        newRound()
+        pressedLetter = []
+    }
+}
+public var totalLoses = 0 {
+    didSet {
+        newRound()
+        pressedLetter = []
+    }
+}
+
+
 struct ContentView: View {
     @State var lives = currentGame.remainedChances
-    @State var score: String = "Wins : \(totalWins), Loses: \(totalLoses)"
+    @State var score: String = "Wins : \(totalWins), Loses: \(totalLoses)" {
+        didSet {
+            guessedWord = updateGuessedWord()
+            lives = currentGame.remainedChances
+            pressedLetter = []
+        }
+    }
+    @State var guessedWord = updateGuessedWord()
     var body: some View {
         VStack {
             Image(pdf: #fileLiteral(resourceName: "Tree \(lives).pdf"))!
@@ -22,7 +42,12 @@ struct ContentView: View {
                     HStack {
                         ForEach(row, id: \.self) { item in 
                             Button(action: {
-                                print(item)
+                                if !pressedLetter.contains(item) {
+                                    lives = letterButtonPressed(item)
+                                    guessedWord = updateGuessedWord()
+                                    score = "Wins : \(updatedGameState().0), Loses: \(updatedGameState().1)"
+                                    pressedLetter.append(item)
+                                }
                             }) {
                                 Text(item)
                                     .font(.title2)
@@ -34,7 +59,7 @@ struct ContentView: View {
             }
             
             //word Label
-            Text(/*@START_MENU_TOKEN@*/"Placeholder"/*@END_MENU_TOKEN@*/)
+            Text(guessedWord)
                 .font(.largeTitle)
                 .foregroundColor(.primary)
             
