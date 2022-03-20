@@ -1,7 +1,5 @@
 import SwiftUI
 
-public var pressedLetter = [String]()
-
 let qwerty = [
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
@@ -11,16 +9,15 @@ let qwerty = [
 public var totalWins = 0 {
     didSet {
         newRound()
-        pressedLetter = []
     }
 }
 public var totalLoses = 0 {
     didSet {
         newRound()
-        pressedLetter = []
     }
 }
 
+public var buttonDisable = false
 
 struct ContentView: View {
     @State var lives = currentGame.remainedChances
@@ -28,7 +25,6 @@ struct ContentView: View {
         didSet {
             guessedWord = updateGuessedWord()
             lives = currentGame.remainedChances
-            pressedLetter = []
         }
     }
     @State var guessedWord = updateGuessedWord()
@@ -42,17 +38,20 @@ struct ContentView: View {
                     HStack {
                         ForEach(row, id: \.self) { item in 
                             Button(action: {
-                                if !pressedLetter.contains(item) {
+                                if !currentGame.guessedLetters.contains(Character(item.lowercased())) {
                                     lives = letterButtonPressed(item)
                                     guessedWord = updateGuessedWord()
                                     score = "Wins : \(updatedGameState().0), Loses: \(updatedGameState().1)"
-                                    pressedLetter.append(item)
                                 }
                             }) {
                                 Text(item)
                                     .font(.title2)
+                                    .foregroundColor(
+                                        currentGame.guessedLetters.contains(Character(item.lowercased())) ? .secondary : .accentColor
+                                    )
                             }.frame(width: 40, height: 40)
                                 .padding()
+                                .disabled(buttonDisable)
                         }
                     }
                 }

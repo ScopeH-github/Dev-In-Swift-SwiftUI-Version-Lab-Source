@@ -28,9 +28,18 @@ public struct Game {
 }
 
 public func newRound() {
-    let newWord = lisrOfWords.removeFirst()
-    currentGame = Game(word: newWord, remainedChances: remainedLives, guessedLetters: [])
+    if !listOfWords.isEmpty {
+        let newWord = listOfWords.removeFirst()
+        currentGame = Game(word: newWord, remainedChances: remainedLives, guessedLetters: [])
+        buttonDisable = buttonEnable(true)
+    } else {
+        buttonDisable = buttonEnable(false)
+    }
 //  print(currentGame)
+}
+
+func buttonEnable(_ enable: Bool) -> Bool {
+    !enable
 }
 
 public func letterButtonPressed(_ item: String) -> Int {
@@ -46,14 +55,11 @@ public func updateGuessedWord() -> String {
     let wordWithSpacing = letters.joined(separator: " ")
     return wordWithSpacing
 }
-
 public func updatedGameState() -> (Int, Int) {
     if currentGame.remainedChances == 0 {
         totalLoses += 1
-        pressedLetter = []
     } else if currentGame.word == currentGame.formattedWord {
         totalWins += 1
-        pressedLetter = []
     }
     return (totalWins, totalLoses)
 }
